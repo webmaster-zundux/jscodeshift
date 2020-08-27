@@ -1,18 +1,16 @@
-/*
- *  Copyright (c) 2015-present, Facebook, Inc.
- *  All rights reserved.
+
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
 
-const _ = require('lodash');
 const Collection = require('../Collection');
 const NodeCollection = require('./Node');
+const once = require('../utils/once');
 const recast = require('recast');
 
 const astNodesAreEquivalent = recast.types.astNodesAreEquivalent;
@@ -115,6 +113,15 @@ const transformMethods = {
           }
 
           if (
+            types.ClassProperty.check(parent) &&
+            parent.key === path.node &&
+            !parent.computed
+          ) {
+            // class A { oldName = 3 }
+            return false;
+          }
+
+          if (
             types.JSXAttribute.check(parent) &&
             parent.name === path.node &&
             !parent.computed
@@ -134,8 +141,8 @@ const transformMethods = {
             scope = scope.parent;
           }
           if (scope) { // identifier must refer to declared variable
-            
-            // It may look like we filtered out properties, 
+
+            // It may look like we filtered out properties,
             // but the filter only ignored property "keys", not "value"s
             // In shorthand properties, "key" and "value" both have an
             // Identifier with the same structure.
@@ -163,5 +170,5 @@ function register() {
   Collection.registerMethods(transformMethods, VariableDeclarator);
 }
 
-exports.register = _.once(register);
+exports.register = once(register);
 exports.filters = filterMethods;

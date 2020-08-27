@@ -1,11 +1,9 @@
-/*
- *  Copyright (c) 2015-present, Facebook, Inc.
- *  All rights reserved.
+
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
@@ -50,6 +48,7 @@ describe('VariableDeclarators', function() {
       '  };',
       '  obj.blah = 3;',
       '  class A {',
+      '    blah = 10',
       '    blah() {}',
       '  }',
       '}',
@@ -128,7 +127,7 @@ describe('VariableDeclarators', function() {
 
       expect(identifiers.length).toBe(1);
     });
-    
+
     it('properly renames a shorthand property that was using the old variable name', function() {
       nodes = [recast.parse([
         'var foo = 42;',
@@ -161,7 +160,7 @@ describe('VariableDeclarators', function() {
     });
 
     it('does not rename React component prop name', function () {
-      const declarators = Collection.fromNodes(nodes)
+      Collection.fromNodes(nodes)
         .findVariableDeclarators('foo')
         .renameTo('xyz');
 

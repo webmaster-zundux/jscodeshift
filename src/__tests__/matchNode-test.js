@@ -1,10 +1,8 @@
 /**
- * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 /*global jest, describe, it, expect, beforeEach*/
@@ -81,7 +79,7 @@ describe('matchNode', function() {
 
   it('matches with a function', function() {
     const haystack = {name: 'foo'};
-    const needle = jest.genMockFunction();
+    const needle = jest.fn();
 
     needle.mockReturnValue(true);
     expect(haystack).toMatchNode(needle);
@@ -94,8 +92,8 @@ describe('matchNode', function() {
   it('matches nested value with a function', function() {
     const haystack = {name: 'foo', value: 'bar'};
     const needle = {
-      name: jest.genMockFunction(),
-      value: jest.genMockFunction(),
+      name: jest.fn(),
+      value: jest.fn(),
     };
 
     needle.name.mockReturnValue(true);

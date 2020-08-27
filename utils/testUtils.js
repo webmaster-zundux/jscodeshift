@@ -1,11 +1,9 @@
-/*
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
+
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
@@ -23,8 +21,8 @@ function renameFileTo(oldPath, newFilename) {
   return newPath;
 }
 
-function createTempFileWith(content, filename) {
-  const info = temp.openSync();
+function createTempFileWith(content, filename, extension) {
+  const info = temp.openSync({ suffix: extension });
   let filePath = info.path;
   fs.writeSync(info.fd, content);
   fs.closeSync(info.fd);
@@ -35,10 +33,13 @@ function createTempFileWith(content, filename) {
 }
 exports.createTempFileWith = createTempFileWith;
 
-function createTransformWith(content, fileName) {
+// Test transform files need a js extension to work with @babel/register
+// .ts or .tsx work as well
+function createTransformWith(content, ext='.js') {
   return createTempFileWith(
     'module.exports = function(fileInfo, api, options) { ' + content + ' }',
-    fileName
+    undefined,
+    ext
   );
 }
 exports.createTransformWith = createTransformWith;

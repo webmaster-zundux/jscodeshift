@@ -1,20 +1,18 @@
-/*
- *  Copyright (c) 2015-present, Facebook, Inc.
- *  All rights reserved.
+
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
 
-const _ = require('lodash');
 const Collection = require('../Collection');
 const NodeCollection = require('./Node');
 
 const assert = require('assert');
+const once = require('../utils/once');
 const recast = require('recast');
 const requiresModule = require('./VariableDeclarator').filters.requiresModule;
 
@@ -95,15 +93,23 @@ const filterMethods = {
         if (!(name in elementAttributes) ){
           return false;
         }
+
         const value = elementAttributes[name].value;
         const expected = attributeFilter[name];
-        const actual = Literal.check(value) ? value.value : value.expression;
+
+        // Only when value is truthy access it's properties
+        const actual = !value
+          ? value
+          : Literal.check(value)
+          ? value.value
+          : value.expression;
+
         if (typeof expected === 'function') {
           return expected(actual);
-        } else {
-          // Literal attribute values are always strings
-          return String(expected) === actual;
         }
+
+         // Literal attribute values are always strings
+        return String(expected) === actual;
       });
     };
   },
@@ -191,6 +197,6 @@ function register() {
   Collection.registerMethods(traversalMethods, JSXElement);
 }
 
-exports.register = _.once(register);
+exports.register = once(register);
 exports.filters = filterMethods;
 exports.mappings = mappingMethods;

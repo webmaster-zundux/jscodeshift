@@ -1,11 +1,9 @@
-/*
- *  Copyright (c) 2015-present, Facebook, Inc.
- *  All rights reserved.
+
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
@@ -95,7 +93,7 @@ describe('Collection API', function() {
 
     it('throws if a method is called for the wrong node type', function() {
       const Collection = require('../Collection');
-      const getNames = jest.genMockFunction();
+      const getNames = jest.fn();
       Collection.registerMethods({getNames: getNames}, types.Identifier);
 
       const collection = Collection.fromNodes([
@@ -107,7 +105,7 @@ describe('Collection API', function() {
 
     it('adds "global" methods to all types', function() {
       const Collection = require('../Collection');
-      const getNames = jest.genMockFunction();
+      const getNames = jest.fn();
       Collection.registerMethods({getNames: getNames});
 
       expect(Collection.fromNodes([b.blockStatement([])]).getNames).toBeDefined();
@@ -218,7 +216,7 @@ describe('Collection API', function() {
 
     describe('forEach', function() {
       it('lets you iterate over each element of an collection', function() {
-        const each = jest.genMockFunction();
+        const each = jest.fn();
         Collection.fromNodes(nodes).forEach(each);
 
         expect(each.mock.calls.length).toBe(2);
@@ -236,7 +234,7 @@ describe('Collection API', function() {
 
     describe('some', function() {
       it('lets you test each element of a collection and stops when one passes the test', function() {
-        const each = jest.genMockFunction().mockImplementation(() => true);
+        const each = jest.fn().mockImplementation(() => true);
         Collection.fromNodes(nodes).some(each);
 
         expect(each.mock.calls.length).toBe(1);
@@ -256,7 +254,7 @@ describe('Collection API', function() {
 
     describe('every', function() {
       it('lets you test each element of a collection and stops when one fails the test', function() {
-        const each = jest.genMockFunction().mockImplementation(() => false);
+        const each = jest.fn().mockImplementation(() => false);
         Collection.fromNodes(nodes).every(each);
 
         expect(each.mock.calls.length).toBe(1);
